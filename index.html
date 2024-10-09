@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHW kvíz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-gray-800 text-white py-6 border-b-4 border-green-500">
+        <h1 class="text-center text-2xl font-bold uppercase">SHW kvíz</h1>
+    </header>
+
+    <div class="container mx-auto mt-10">
+        <div id="quiz-container" class="bg-white p-6 rounded-lg shadow-md">
+            <div class="question">
+                <h2 id="question-text" class="text-xl font-semibold mb-4">Načítání...</h2>
+                <div class="answers space-y-2">
+                    <label class="block">
+                        <input type="radio" name="answer" value="a" class="mr-2">
+                        <span id="option1">Možnost 1</span>
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="answer" value="b" class="mr-2">
+                        <span id="option2">Možnost 2</span>
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="answer" value="c" class="mr-2">
+                        <span id="option3">Možnost 3</span>
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="answer" value="d" class="mr-2">
+                        <span id="option4">Možnost 4</span>
+                    </label>
+                </div>
+                <button onclick="nextQuestion()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-6">
+                    Další
+                </button>
+            </div>
+            <div id="score" class="hidden">
+                <h2 class="text-xl font-semibold mb-4">Kvíz dokončen!</h2>
+                <p id="score-text" class="mb-4"></p>
+                <button onclick="restartQuiz()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Restartovat kvíz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+  const quizData = [
+            {
+                question: "Co je to intranet?",
+                options: ["Veřejná síť", "Vnitřní síť", "Rozšířená část internetu", "Síť, která propojuje lokální sítě"],
+                correct: "b"
+            },
+            {
+                question: "Jaké zařízení se používá k propojení lokálních sítí v síti WAN?",
+                options: ["Switch", "Router", "Hub", "Repeater"],
+                correct: "b"
+            },
+            {
+                question: "Jaká topologie se zaměřuje na pojmenování sítí a IP adresy?",
+                options: ["Fyzická", "Logická", "Hybridní", "Zónová"],
+                correct: "b"
+            },
+            {
+                question: "Které zařízení je koncové zařízení (End Device)?",
+                options: ["Switch", "Router", "Mobilní telefon", "Repeater"],
+                correct: "c"
+            },
+            {
+                question: "Která technologie je bezdrátová?",
+                options: ["Fiber-optic", "Copper", "Bluetooth", "Coaxial cable"],
+                correct: "c"
+            },
+            {
+                question: "Co je hlavním úkolem routeru?",
+                options: ["Směrování", "Spojování zařízení", "Replikace signálu", "Přidělování IP"],
+                correct: "a"
+            },
+            {
+                question: "Jaký je hlavní rozdíl mezi routerem a switchem?",
+                options: ["Router spojuje sítě", "Switch spojuje zařízení", "Router je starší verze switche", "Switch přiděluje IP adresy"],
+                correct: "a"
+            },
+            {
+                question: "Popište rozdíl mezi LAN a WAN.",
+                options: ["LAN je lokální síť, WAN pokrývá širší oblasti", "LAN pokrývá širší oblasti, WAN je lokální síť", "Obě pokrývají lokální oblasti", "LAN a WAN jsou stejné"],
+                correct: "a"
+            },
+            {
+                question: "Jaký je účel služby DHCP?",
+                options: ["Překládá IP adresy na doménová jména", "Přiděluje IP adresy zařízením", "Zajišťuje hlasovou komunikaci přes internet", "Spravuje časové zóny"],
+                correct: "b"
+            },
+            {
+                question: "Peer-to-peer sítě jsou bezpečnější než server-klient sítě.",
+                options: ["Pravda", "Nepravda"],
+                correct: "b"
+            },
+            {
+                question: "Fiber-optic kabely jsou dražší, ale rychlejší než měděné.",
+                options: ["Pravda", "Nepravda"],
+                correct: "a"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionElement = document.getElementById("question-text");
+            const option1 = document.getElementById("option1");
+            const option2 = document.getElementById("option2");
+            const option3 = document.getElementById("option3");
+            const option4 = document.getElementById("option4");
+
+            const currentData = quizData[currentQuestion];
+            questionElement.textContent = currentData.question;
+            option1.textContent = currentData.options[0];
+            option2.textContent = currentData.options[1];
+            option3.textContent = currentData.options[2];
+            option4.textContent = currentData.options[3];
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption && selectedOption.value === quizData[currentQuestion].correct) {
+                score++;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            document.querySelector('.question').style.display = 'none';
+            document.getElementById("score").style.display = 'block';
+            document.getElementById("score-text").textContent = `Máš celkem ${score} bodů z ${quizData.length}`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.question').style.display = 'block';
+            document.getElementById("score").style.display = 'none';
+            loadQuestion();
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
